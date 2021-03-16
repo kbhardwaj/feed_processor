@@ -1,0 +1,20 @@
+<html>
+    <title>Tutorials</title>
+    <!-- link, title, description, categories -->
+    <body>
+        {% for item in items %}
+            <h3 style="margin-top: 60px">{{ item.title }}</h3>
+            <div style="margin-top: 20px">{{ item.description }}</div>
+            <div style="margin-top: 20px">
+                <a href="{{ item.link }}" target="_blank">{{ item.link }}</a>
+            </div>
+            <div style="margin-top: 20px">
+                {% for category in item.categories %}
+                    <span style="margin-right: 10px; padding:10px; background-color: whitesmoke;">
+                        {{ category }}
+                    </span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </body>
+</html>
