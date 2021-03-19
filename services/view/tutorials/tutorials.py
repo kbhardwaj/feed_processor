@@ -8,6 +8,10 @@ env = Environment(
     autoescape=select_autoescape(['html', 'xml'])
 )
 
+def test_function():
+    return 5
+
+env.globals['filter_function'] = test_function
 
 """
 Get data from the store and create the jinja html templates to view the data in human readable form
@@ -41,12 +45,18 @@ class TemplateRenderer():
     def getTemplateData(self, templateName):
         return self.store.get(templateName)
 
+    def getItems(self, ):
+        templateData = self.getTemplateData('tutorials')
+
+        items = [v for k, v in templateData.items()]
+
+        return items
+
     def render(self, templateName='tutorials'):
         template = env.get_template('tutorials.html')
         # get the data from store. use data to render template
-        templateData = self.getTemplateData(templateName)
 
-        items = [v for k, v in templateData.items()]
+        items = self.getItems()
 
         return template.render(items=items)
 

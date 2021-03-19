@@ -1,20 +1,73 @@
 <html>
     <title>Tutorials</title>
-    <!-- link, title, description, categories -->
     <body>
-        {% for item in items %}
-            <h3 style="margin-top: 60px">{{ item.title }}</h3>
-            <div style="margin-top: 20px">{{ item.description }}</div>
-            <div style="margin-top: 20px">
-                <a href="{{ item.link }}" target="_blank">{{ item.link }}</a>
-            </div>
-            <div style="margin-top: 20px">
-                {% for category in item.categories %}
-                    <span style="margin-right: 10px; padding:10px; background-color: whitesmoke;">
-                        {{ category }}
-                    </span>
-                {% endfor %}
-            </div>
-        {% endfor %}
+        <form onsubmit="submitItemSelections(event)" style="position:fixed; top: 40px; right: 40px;">
+            <button type="submit">submit</button>
+        </form>
+        <div class="all-items">
+            {% for item in items %}
+                <div style="margin-top: 60px">
+                    <meta id="meta-data-{{ loop.index }}" data-categories="{{ item.categories }}" data-category="{{ item.category }}" data-title="{{ item.title }}" data-link="{{ item.link }}" data-description="{{ item.description }}">
+                    
+                    <!-- Alternative to onchange https://www.javascripttutorial.net/javascript-dom/javascript-change-event/ -->
+                    <input type="checkbox" class="item-selector" name="itemUrl" value="{{ loop.index }}" onchange="addSelection(event)">
+                    <h3>{{ item.title }}</h3>
+                    <div style="margin-top: 20px">{{ item.description }}</div>
+                    <div style="margin-top: 20px">
+                        <a href="{{ item.link }}" target="_blank">{{ item.link }}</a>
+                    </div>
+                    <div style="margin-top: 20px">
+                        {% for category in item.categories %}
+                            <span style="margin-right: 10px; padding:10px; background-color: whitesmoke;">
+                                {{ category }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </body>
+
+    {% block javascript %}
+        <script>            
+            const selections = {}
+            function submitItemSelections(e) {
+                e.preventDefault()
+                const tf = "{{ filter_function() }}"
+                console.log('tf', tf)
+                const text = JSON.stringify(selections, null, 2)
+                navigator.clipboard.writeText(text)
+                    .then(() => { alert(`Copied!`) })
+                    .catch((error) => { alert(`Copy failed! ${error}`) })
+            }
+
+            function addSelection(e) {
+                // https://stackoverflow.com/questions/21626048/unable-to-pass-jinja2-variables-into-javascript-snippet/21628553
+                const itemMeta = document.querySelector(`#meta-data-${e.target.value}`)
+
+                const {
+                    title,
+                    description,
+                    link,
+                    category,
+                    categories,
+                } = itemMeta.dataset
+
+                const item = {
+                    title,
+                    description,
+                    link,
+                    category,
+                    categories: JSON.parse(categories.replaceAll("'", "\"")),
+                }
+
+                if (e.target.checked) {
+                    selections[item.link] = item
+                } else {
+                    delete selections[item.link]
+                }
+            }
+
+        </script>
+    {% endblock %}
 </html>

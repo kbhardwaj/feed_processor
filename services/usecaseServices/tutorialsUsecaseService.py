@@ -69,8 +69,8 @@ class TextFetcher():
             self.cleanTitle = title
             self.cleanDescription = description
 
-        self.item['title'] = title
-        self.item['description'] = description
+        self.item["title"] = title
+        self.item["description"] = description
         return self.item
 
         
@@ -93,7 +93,7 @@ class TutorialsUsecaseService():
         if item.get('category'):
             categoryList = categoryList + item.get('category').split(',')
 
-        item['categories'] = list(set(categoryList))
+        item["categories"] = list(set(categoryList))
 
     # temporary method
     def getRakeKeywords(self, item):
